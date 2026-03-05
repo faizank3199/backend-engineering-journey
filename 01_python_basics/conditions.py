@@ -1,14 +1,18 @@
-#===================================
-# Conditions in python 
-#===================================
-
 """
-----------------------------------
- Topics Covered:
-1. if / elif / else
-2. Nested conditions
-3. Ternary operator
-4. match-case (Python 3.10+)
+========================================================
+Conditions in Python
+========================================================
+
+Topics Covered:
+1. Basic if 
+2. Logical Operators (and, or, not)
+3. if / elif / else
+4. Login system
+5. Role-Based Access (example)
+6. Nested Conditions
+7. Boolean Conversion Input Version 
+8. Ternary Operator
+9. Match-Case (Python 3.10+)
 
 Backend Relevance:
 - Role checking
@@ -17,339 +21,219 @@ Backend Relevance:
 - Validation logic
 
 Author: Mohammad Faizan
-Date : 24/02/2026
-----------------------------------
+Date: 24/02/2026
+Python Version: 3.10+
+========================================================
 """
 
-#====================================================
-# Conditions allow your program to make decisions.
-# A condition checks:
-#         Is something TRUE or FALSE?
 
-#  Real life examples:
-#  If age ≥ 18 → allow voting
-#  If password correct → login
-#=====================================================
+# ======================================================
+# 1. BASIC IF CONDITIONS
+# ======================================================
 
-#--------------------------------
-#  Python Uses: 
-#--------------------------------
-#  1. if
-#  2. elif 
-#  3. else
-#--------------------------------
+def basic_if_examples():
+    print("\n---- Basic if Example ----")
 
-#=================================
-# 1. if 
-#=================================
+    age = 20
+    if age >= 18:
+        print("You are an adult")
 
-# Basics Syntax :
-# if condition:
-    # code runs if condition is True
-     
-
-print("----if condition example----")
-
-age = 20
-
-if age >= 18:                  # conditions True so print runs 
-    print("You are an adult")
- 
-# what if conditions is false 
-age = 15
-
-if age >= 18:                  # conditions False so nothing print 
-    print("You are an adult")
-  
- #-----------------------------------   
- #  if (with Boolean Values)
- #--------------------------------
- 
-is_logged_in = True 
-if is_logged_in:
-    print(" welcome user ")
-    
-is_logged_in = False     # nothing print 
-
-#---------=---------------------------
-# if (with operator)
-#-------------------------------------
-number = 10
-
-if number == 10:
-    print("Number is 10")
-    
-# ------------------------------------
-# Api example 
-#------------------------------------
-status_code  = 200
-if status_code == 200:
-    print(" request successful ")
-    
-temprature = 55
-if temprature > 30:
-    print("Hot Weather")
-    
-    
-print("----if else conditions examples-----")
-
-#=================================
-# if (with and Operator)
-#==================================
-
-# both conditions needs to be True 
-
-age = 20
-has_id = True 
-
-if age >= 18 and has_id:    # condition True ,has_id = True , True and True is True 
-    print("Entry allowed ")
-    
-
-age = 20
-has_id = False
-
-if age >= 18 and has_id:    # condition True has_id = False , True and False
-    print("Entry allowed ")
-    
-#=========================================
-# if ( with or Operator)
-#==========================================
-
-# only ONE condition needs to be True
-
-is_admin = True
-is_editor = False
-
-if is_admin or is_editor:
-    print("Access Granted")
-    
-    
-#==========================================
-#  if (with not Operator)
-#==========================================
-
-is_logged_in=False
-
-if not is_logged_in:                  # not False -> True
-    print(" Please login first ")
+    age = 15
+    if age >= 18:
+        print("You are an adult")  # Will not execute
 
 
-#=========================================    
-#  2. elif and else
-#==========================================
+# ======================================================
+# 2. LOGICAL OPERATORS
+# ======================================================
 
-# Basics Syntax :
-# if condition:
-    # code runs if condition is False
-    
-# else:
-     # code run if condition is True  
-     
-temprature = 30
+def logical_operator_examples():
+    print("\n---- Logical Operators ----")
 
-if temprature > 30:
-    print("Hot Weather")
-    
-else:
-    print("Normal Wearher")
-     
+    # AND
+    age = 20
+    has_id = True
+    if age >= 18 and has_id:
+        print("Entry allowed")
 
-temprature = 45
+    # OR
+    is_admin = True
+    is_editor = False
+    if is_admin or is_editor:
+        print("Access Granted")
 
-if temprature > 40:
-    print("Very hot")
-    
-elif temprature > 30:
-    print("hot")
-    
-else:
-    print("normal")
-    
-
-#-------------------------------
-# Login system examples 
-#--------------------------------
-print("----Login system example----")
-stored_username = "faizan"
-stored_password = "1234"
-
-user_name = input("enter the user name:")
-password = input("enter the password:")
-
-if stored_password == password and stored_username == user_name:
-    print("Login Successfull")
-else:
-    print("Invalid Credentials")
-    
-#-----------------------------------------
-
-role = "editor"
-
-if role == "editor" or role == "admin":
-    print("You can edit the content")
-    
-else:
-    print("Read only access")    
+    # NOT
+    is_logged_in = False
+    if not is_logged_in:
+        print("Please login first")
 
 
-#------------------------------------------
+# ======================================================
+# 3. IF-ELIF-ELSE
+# ======================================================
 
-is_logged_in  = True
-is_admin = False
-is_varified = True 
+def temperature_example():
+    print("\n---- if-elif-else Example ----")
 
-if is_logged_in and (is_admin or is_varified):
-    print("Access to dashboard")
-    
-else:
-    print("Access denied")
-    
-    
-#----------------------------------------------
-age = 22
-has_license = True 
+    temperature = 45
 
-if age >= 18 and has_license:
-    print("You can access the system")
-else:
-    print("Access denied to system")
-    
-    
-#---------------------------------------------   
-age >= 18
-has_license = True
-is_verified = True
-
-if age >=18 and has_license and is_verified:
-    print("You can access the sytem")
-    
-else:
-    print("Access denied to the system")
-    
-    
-# =========================================
-# Role Based Access System (mini exercise)
-#==========================================
-
-is_logged_in = True
-role = "admin"
-
-if not is_logged_in:
-    print("Please login first")
-
-elif role == "admin":
-    print("Full Access")
-
-elif role == "editor":
-    print("Edit Access")
-
-elif role == "viewer":
-    print("Limited Access")
-
-else:
-    print("Invalid Role")
-    
-
-#==========================================
-# 2.  Nested Conditions
-#==========================================
-
-# An if inside another if
-
-# syntax 
-#        if condition1:
-#             if condition2:
-#                       code
-
-#--------------------------------------------
-
-print("----simple nested example----")
-
-is_logged_in = True
-is_email_verified = True
-role = "admin"
-
-if is_logged_in:
-    if is_email_verified:
-        if role == "admin":
-            print("Wekcome to admin dashboard")
-        else:
-            print("Access denied : you are  not admin ")
-            
+    if temperature > 40:
+        print("Very Hot")
+    elif temperature > 30:
+        print("Hot")
     else:
-        print("Please verified your email")
-        
-else:
-    print("Please login first")
-    
-#---------------------------------------------
-print("----simple nested example 2----")
+        print("Normal")
 
-is_logged_in = True
-is_email_verified = True
-role = "editor"
 
-if is_logged_in:
-    if is_email_verified:
-        if role == "admin":
-            print("Welcome to Admin Dashboard")
-        elif role == "editor":
-            print("Editor Panel")
-        else:
-            print("Limited Access")
+# ======================================================
+# 4.  LOGIN SYSTEM (example)
+# ======================================================
+
+def login_system():
+    print("\n---- Login System Example ----")
+
+    stored_username = "faizan"
+    stored_password = "1234"
+
+    username = input("Enter username: ")
+    password = input("Enter password: ")
+
+    if username == stored_username and password == stored_password:
+        print("Login Successful")
     else:
-        print("Please verify email")
-else:
-    print("Login Required")
+        print("Invalid Credentials")
 
-#-------------------------------------------------
-print("---Input-Based Nested Example---")
 
-is_logged_in = input("Are you logged in (yes/no): ").lower()
-is_email_verified = input("Is your email verified (yes/no): ").lower()
-role = input("Enter your role (admin/editor/viewer): ").lower()
+# ======================================================
+#  5. ROLE-BASED ACCESS (example)
+# ======================================================
 
-if is_logged_in == "yes":
-    if is_email_verified == "yes":
-        if role == "admin":
-            print("Welcome to Admin Dashboard")
-        elif role == "editor":
-            print("Editor Panel Access")
-        elif role == "viewer":
-            print("Limited Access")
-        else:
-            print("Invalid Role")
+def role_based_access():
+    print("\n---- Role-Based Access ----")
+
+    is_logged_in = True
+    role = "admin"
+
+    if not is_logged_in:
+        print("Please login first")
+    elif role == "admin":
+        print("Full Access")
+    elif role == "editor":
+        print("Edit Access")
+    elif role == "viewer":
+        print("Limited Access")
     else:
+        print("Invalid Role")
+
+
+# ======================================================
+# 6. NESTED CONDITIONS
+# ======================================================
+
+def nested_condition_example():
+    print("\n---- Nested Condition Example ----")
+
+    is_logged_in = True
+    is_email_verified = True
+    role = "editor"
+
+    if is_logged_in:
+        if is_email_verified:
+            if role == "admin":
+                print("Welcome to Admin Dashboard")
+            elif role == "editor":
+                print("Editor Panel")
+            else:
+                print("Limited Access")
+        else:
+            print("Please verify your email")
+    else:
+        print("Login Required")
+
+
+# ======================================================
+# 7. BOOLEAN CONVERSION INPUT VERSION
+# ======================================================
+
+def boolean_conversion_example():
+    print("\n---- Boolean Conversion Version ----")
+
+    is_logged_in = input("Are you logged in (yes/no): ").lower() == "yes"
+    is_email_verified = input("Is your email verified (yes/no): ").lower() == "yes"
+    role = input("Enter your role (admin/editor/viewer): ").lower()
+
+    if not is_logged_in:
+        print("Login Required")
+    elif not is_email_verified:
         print("Please verify your email")
-else:
-    print("Login Required")
-    
-#--------------------------------------------------------
-#   Convert "yes/no" to Boolean
-#--------------------------------------------------------
-print("----yes no to Boolean----")
-
-# Convert directly to Boolean
-is_logged_in = input("Are you logged in (yes/no): ").lower() == "yes"
-is_email_verified = input("Is your email verified (yes/no): ").lower() == "yes"
-role = input("Enter your role (admin/editor/viewer): ").lower()
+    elif role == "admin":
+        print("Welcome to Admin Dashboard")
+    elif role == "editor":
+        print("Editor Panel Access")
+    elif role == "viewer":
+        print("Limited Access")
+    else:
+        print("Invalid Role")
 
 
-if not is_logged_in:
-    print("Login Required")
+# ======================================================
+# 8. TERNARY OPERATOR
+# ======================================================
 
-elif not is_email_verified:
-    print("Please verify your email")
+def check_even_odd(number: int) -> str:
+    """
+    One-line condition example.
+    """
+    return "Even" if number % 2 == 0 else "Odd"
 
-elif role == "admin":
-    print("Welcome to Admin Dashboard")
 
-elif role == "editor":
-    print("Editor Panel Access")
+# ======================================================
+# 9. MATCH-CASE (Python 3.10+)
+# ======================================================
 
-elif role == "viewer":
-    print("Limited Access")
+def get_http_status_message(status_code: int) -> str:
+    """
+    Simulates API response handling.
+    """
+    match status_code:
+        case 200:
+            return "OK - Request successful"
+        case 201:
+            return "Created - Resource created"
+        case 400:
+            return "Bad Request"
+        case 401:
+            return "Unauthorized"
+        case 404:
+            return "Not Found"
+        case 500:
+            return "Internal Server Error"
+        case _:
+            return "Unknown Status Code"
 
-else:
-    print("Invalid Role")
+
+# ======================================================
+# MAIN FUNCTION
+# ======================================================
+
+def main():
+    basic_if_examples()
+    logical_operator_examples()
+    temperature_example()
+    role_based_access()
+    nested_condition_example()
+
+    # Commented to avoid blocking automation
+    # login_system()
+    # boolean_conversion_example()
+
+    print("\nEven/Odd Check:", check_even_odd(7))
+    print("HTTP Status:", get_http_status_message(404))
+
+
+# ======================================================
+# ENTRY POINT
+# ======================================================
+
+if __name__ == "__main__":
+    main()
