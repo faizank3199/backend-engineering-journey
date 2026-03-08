@@ -76,11 +76,23 @@ def check_guess(secret_number: int, guess: int) -> bool:
 
     else:
         print("Too Low")
+        
+    # Hint System
+    difference = abs(secret_number-guess)
+    
+    if difference <= 5:
+        print("Too Close")
+        
+    elif difference <= 15:
+        print("Close")
+        
+    else:
+        print("Far")
 
     return False
 
 
-def play_game() -> None:
+def play_game() -> bool:
     """Main game logic"""
 
     print("\nWelcome to the Number Guessing Game!")
@@ -97,19 +109,40 @@ def play_game() -> None:
 
         if check_guess(secret_number, guess):
             print("You Win!")
-            return
+            return True   # win
 
         attempts -= 1
 
     print("\nGame Over")
     print(f"The secret number was {secret_number}")
-
+    
+    return False   # loss
+    
+def show_stats(played_games: int, wins:int, losses:int)->None:
+    print("Player Statistics")
+    print("======================")
+    print("Total Games: ",played_games)
+    print("Wins: ",wins)
+    print("Losses:",losses )
+    
+    
+    
 
 def main() -> None:
     """Main program loop"""
+    played_game = 0
+    wins = 0
+    losses = 0
 
     while True:
-        play_game()
+        result = play_game()
+        played_game +=1
+        if result:
+            wins +=1
+        else:
+            losses +=1
+            
+        show_stats(played_game,wins,losses)
 
         again = input("\nPlay again? (y/n): ").lower()
 
