@@ -1,27 +1,79 @@
-# =====================================
-# Number Guessing Game
-# =====================================
+#=====================================
+#         Number Guessing Game
+#=====================================
 
 """
-=====================================
-        Number Guessing Game
-=====================================
+
 
 CLI game where the player guesses a 
 random number between 1 and 100.
 
 Features:
 - Difficulty levels
+- Hint system
 - Attempt system
 - Input validation
+- Player statistics
+- Leaderboard (Top 5)
 - Replay option
 
 Author: Mohammad Faizan
-Date: 07/03/2026
+Date: 09/03/2026
 """
 
 import random
+import json
+import os 
+os.makedirs("data", exist_ok=True)
+#-------------------------------------------------------
+# LeaderBoard Functions
 
+FILE = "data/leaderboard.json"
+def load_leaderboard():
+    
+    if not os.path.exists(FILE):
+        return []
+    
+    
+    try:
+        with open(FILE,"r") as f:
+            return json.load(f)
+        
+    except json.JSONDecodeError:
+        return []
+        
+# Save Record 
+def save_record(name,attempts):
+    board = load_leaderboard()
+    
+    board.append(
+        {
+            "name" : name,
+            "attempts": attempts
+        }
+    )
+    board = sorted(board, key=lambda x : x["attempts"])[:5]
+    
+    with open(FILE,"w") as f:
+        json.dump(board, f, indent=4)
+
+# show Leaderboard
+    
+def show_leaderboard():
+    board = load_leaderboard()
+    
+    print("\nLeaderboard")
+    print("---------------")
+    
+    if not board:
+        print("no scores yet")
+        return 
+    
+    for i, player in enumerate(board,start=1):
+        print(f"{i}. {player['name']} - {player['attempts']} attempts")
+
+#----------------------------------------------------------------
+# Difficulty 
 
 def choose_difficulty() -> int:
     """Choose game difficulty and return attempts"""
@@ -100,23 +152,31 @@ def play_game() -> bool:
 
     secret_number = random.randint(1, 100)
     attempts = choose_difficulty()
+    attempts_used = 0
 
     while attempts > 0:
 
         print(f"\nAttempts left: {attempts}")
 
         guess = get_user_guess()
+        attempts_used += 1
 
         if check_guess(secret_number, guess):
             print("You Win!")
+             
+            name = input("Enter Your name: ")
+            save_record(name, attempts_used)
+            
             return True   # win
-
+         
         attempts -= 1
 
     print("\nGame Over")
     print(f"The secret number was {secret_number}")
     
     return False   # loss
+
+   
     
 def show_stats(played_games: int, wins:int, losses:int)->None:
     print("Player Statistics")
@@ -124,6 +184,10 @@ def show_stats(played_games: int, wins:int, losses:int)->None:
     print("Total Games: ",played_games)
     print("Wins: ",wins)
     print("Losses:",losses )
+    
+    if played_games > 0:
+        rate = (wins / played_games) * 100
+        print(f"Win Rate: {rate:.2f}%")
     
     
     
@@ -143,6 +207,7 @@ def main() -> None:
             losses +=1
             
         show_stats(played_game,wins,losses)
+        show_leaderboard()
 
         again = input("\nPlay again? (y/n): ").lower()
 
