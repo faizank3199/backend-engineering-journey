@@ -21,7 +21,7 @@ Topics Covered:
 - Negative indexing
 - Slicing
 - List methods
-- Iteration
+- Iteration 
 - List comprehension
 
 List Methods Covered:
@@ -225,8 +225,22 @@ numbers = [10, 20, 30, 40]
 
 for num in numbers:
     print(num)
+#-----------------------------------------------------
+# for printing index
+numbers =  [10, 20, 30, 40]
 
+print("--loop index example--")
+for i in range(len(numbers)):
+    print(f"index - {i}, value - {numbers[i]}")
 
+#------------------------------------------------------
+# enumerate method 
+
+n =  [10, 20, 30, 40, 50]
+print("--enumerate example--")
+
+for i, val in enumerate(n):
+    print(f"index - {i},  value - {val}")
 # ===================================================
 # List Comprehension
 # ===================================================
@@ -251,4 +265,38 @@ users = [
 ]
 
 for user in users:
-    print(user["name"])
+    print(user["name"]) 
+    
+#==================================================
+# Nested List 
+#==================================================
+
+# A list contain another list 
+# matrix[row][col]
+print("-Nested List Example-")
+users =  [
+    ["Faizan",22],
+    ["Rahul",25],
+    ["Ammir",24]
+]
+print(users[0][0]) # Faizan
+print(users[2][1]) # 24
+
+# using for loop
+print("-Nested List Using Loop-")
+
+for user in users:
+    print(f"name - {user[0]}, age - {user[1]}")
+
+# print whose age > 22
+
+users =  [
+    ["Faizan",22],
+    ["Rahul",25],
+    ["Ammir",24]
+]
+print("--age > 22 Example--")
+for user in users:
+    
+    if user[1] > 22:
+        print(user)
