@@ -21,8 +21,9 @@ Topics Covered:
 - Negative indexing
 - Slicing
 - List methods
-- Iteration 
+- Iteration
 - List comprehension
+- Nested lists
 
 List Methods Covered:
 - len()
@@ -108,7 +109,7 @@ print("\n--- Negative Slicing Example ---")
 
 numbers = [10, 50, 30, 20, 40, 60]
 
-print(numbers[::-1])       # Reverse list
+print(numbers[::-1])       # reverse list
 print(numbers[:-4:-1])     # [60,40,20]
 print(numbers[-5:-2])      # [50,30,20]
 
@@ -216,6 +217,18 @@ print(num)
 
 
 # ===================================================
+# Membership Operator
+# ===================================================
+
+print("\n--- Membership Example ---")
+
+numbers = [10, 20, 30, 40]
+
+print(20 in numbers)   # True
+print(100 in numbers)  # False
+
+
+# ===================================================
 # Iterating Through a List
 # ===================================================
 
@@ -225,22 +238,30 @@ numbers = [10, 20, 30, 40]
 
 for num in numbers:
     print(num)
-#-----------------------------------------------------
-# for printing index
-numbers =  [10, 20, 30, 40]
 
-print("--loop index example--")
+
+# ---------------------------------------------------
+# Iteration with index
+
+print("\n--- Loop with Index ---")
+
+numbers = [10, 20, 30, 40]
+
 for i in range(len(numbers)):
     print(f"index - {i}, value - {numbers[i]}")
 
-#------------------------------------------------------
-# enumerate method 
 
-n =  [10, 20, 30, 40, 50]
-print("--enumerate example--")
+# ---------------------------------------------------
+# enumerate()
 
-for i, val in enumerate(n):
-    print(f"index - {i},  value - {val}")
+print("\n--- Enumerate Example ---")
+
+numbers = [10, 20, 30, 40, 50]
+
+for i, val in enumerate(numbers):
+    print(f"index - {i}, value - {val}")
+
+
 # ===================================================
 # List Comprehension
 # ===================================================
@@ -265,38 +286,163 @@ users = [
 ]
 
 for user in users:
-    print(user["name"]) 
-    
-#==================================================
-# Nested List 
-#==================================================
+    print(f"{user['name']} -> {user['age']}")
 
-# A list contain another list 
-# matrix[row][col]
-print("-Nested List Example-")
-users =  [
-    ["Faizan",22],
-    ["Rahul",25],
-    ["Ammir",24]
+
+# ===================================================
+# Nested Lists
+# ===================================================
+
+# A nested list is a list that contains other lists
+# matrix[row][column]
+
+print("\n--- Nested List Example ---")
+
+users = [
+    ["Faizan", 22],
+    ["Rahul", 25],
+    ["Ammir", 24]
 ]
-print(users[0][0]) # Faizan
-print(users[2][1]) # 24
 
-# using for loop
-print("-Nested List Using Loop-")
+print(users[0][0])  # Faizan
+print(users[2][1])  # 24
+
+
+# ---------------------------------------------------
+# Nested list using loop
+
+print("\n--- Nested List Using Loop ---")
 
 for user in users:
     print(f"name - {user[0]}, age - {user[1]}")
-
-# print whose age > 22
-
-users =  [
-    ["Faizan",22],
-    ["Rahul",25],
-    ["Ammir",24]
-]
-print("--age > 22 Example--")
-for user in users:
     
+#------------------------------------------------------
+# add new user in users and update nested value
+users = [
+    ["Faizan", 22],
+    ["Rahul", 25],
+    ["Ammir", 24]
+]
+print("\n--Nested list update example--")
+users.append(["admin",24])
+for user in users:
+    print(user)
+    
+#update nested value
+print("\n--update nested value example--")
+users[3][1] = 26
+print(users)
+
+
+
+# ---------------------------------------------------
+# Filter example
+
+print("\n--- Age > 22 Example ---")
+
+for user in users:
     if user[1] > 22:
         print(user)
+        
+#-------------------------------------------------------
+
+#=================================================================
+# Shallow copy and deep copy
+#=================================================================
+"""
+ shallow copy -
+ A shallow copy creats a new outer object, but the inner inner object
+ shared between the origanl and the copy.
+ 
+ - outer list is new 
+ - inner elements refrence the same memory
+ 
+"""
+# safe for id list 
+a = [1,2,3,4]
+print("\n-Example of shallow copy--")
+b = a.copy()
+b.append(5)
+print("origanl: ",a)
+print("Copy: ",b)
+
+# shallow copy problem with nested list
+
+a = [
+    [10,20],
+    [20,30]
+]
+print("\n--Shallow copy problem with nested list example--")
+b=a.copy()      
+b[1][1]= 99
+                 # origanl will also change 
+print("Orignal: ",a)      
+print("Copy: ",b)
+
+"""
+- Becouse .copy() only copies outer list but inner list refrence same 
+- So outer list become new list 
+- But inner list refrence same
+- Both list point he same inner object
+
+- When Shallow copy is safe:
+  - Shallow copy is fine when elements are immutable
+  - like, integers can not change -> safe 
+    
+- When It Becomes Dangerous: 
+  -When objects are nested:
+    - list inside list
+    - dict inside dict
+    - objects inside objects
+Then change affect both copies.    
+
+"""
+#==========================================================================================
+
+"""
+Deep Copy- 
+
+Deep copy creats a completly new object, and also nested objects inside it are also copied.
+So, the copy becomes fully indipendent form the orignal.
+outer object -> new
+inner object -> new 
+
+"""
+
+import copy
+
+orignal  = [
+    [1,2,3],
+    [1,2,3]
+]
+print("\n--Deep Copy Example--")
+deep_copy  = copy.deepcopy(orignal)
+
+deep_copy[0][2] = 4
+
+print("Orignal: ",orignal)
+print("Deep Copy: ", deep_copy)
+
+# With dictionary
+
+user1 = {
+    "name" : "Faizan",
+    "skills" : ["Python", "FastApi"]
+}
+print("\n--Deep Copy With Dictionary Example--")
+user2 = copy.deepcopy(user1)
+
+user2["skills"].append("Docker")
+
+print("Orignal: ",user1)
+print("Deep Copy: ",user2)   # only user2 changed
+
+"""
+Deep Copy is  used when working with nested data structures:
+- lists inside lists
+- Dictionaries inside dictionaries
+- Objects inside objects
+- JSON-like structures (common in backend)
+    
+"""
+
