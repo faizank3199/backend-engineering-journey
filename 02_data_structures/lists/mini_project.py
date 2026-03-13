@@ -1,10 +1,29 @@
 """
-Student Score Manager(Mini Projects)
+=====================================================
+        Student Score Manager CLI
+=====================================================
+
+A command-line application to manage student scores.
 
 Features:
- - Add student
- - Veiw Student
-   
+- Add Student
+- View Students
+- Update Score
+- Delete Student
+- Find Top Student
+- Calculate Average Score
+- Show Failed Students
+
+Concepts Used:
+- Lists
+- Dictionaries
+- Loops
+- Input validation
+- CRUD operations
+
+Author : Mohammad Faizan
+Date   : 13/03/2026
+=====================================================
 """
 students = []
 
@@ -28,7 +47,7 @@ def add_student():
         students.append(student)
         print(student)
         
-        print("Student Added Successfully")
+        print(f"Student {student['name']} Added Successfully")
         
 
 def view_student():
@@ -174,7 +193,7 @@ def main():
                 print("Goodbye!")
                 break
             else:
-                return f"Invalid Input"
+                return f"Invalid input. Please select 1-8."
         except ValueError:
             print("invalid input")
                 
