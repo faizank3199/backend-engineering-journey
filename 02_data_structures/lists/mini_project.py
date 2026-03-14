@@ -11,8 +11,10 @@ Features:
 - Update Score
 - Delete Student
 - Find Top Student
+- Leaderboard (Top 5 student)
 - Calculate Average Score
 - Show Failed Students
+- save to Json
 
 Concepts Used:
 - Lists
@@ -22,11 +24,55 @@ Concepts Used:
 - CRUD operations
 
 Author : Mohammad Faizan
-Date   : 13/03/2026
+Date   : 14/03/2026
 =====================================================
 """
+
+import json
+
+
+file= "data/student.json"
 students = []
 
+def student_leaderboard():
+    
+    
+    if not students:
+        print("No students available")
+        return 
+    
+    print("\n== Leaderboard (Top 5 Students)==")
+    sorted_student = sorted(
+        students,
+        key = lambda  x : x['score'],
+        reverse = True
+    )[:5]
+    
+    for rank, student in enumerate(sorted_student, start = 1):
+       
+        print(
+            f"{rank} - {student['name']} -> {student['score']} marks"
+        )
+        
+    
+
+
+def load_students():
+    
+    try:
+        with open(file,'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+    
+def save_students(students):
+    
+        with open(file,'w') as f:
+            json.dump(students, f, indent=4)
+        
+    
+students = load_students()
+    
 def add_student():
     
     
@@ -34,6 +80,10 @@ def add_student():
         
         try:
             score = int(input("Enter the marks: "))
+            
+            if score < 0 or score > 100:
+                print("Marks must be between 0 and 100")
+                return
             
         except ValueError:
             print("Please enter the valid marks")
@@ -45,7 +95,8 @@ def add_student():
         }
         
         students.append(student)
-        print(student)
+        
+        save_students(students)
         
         print(f"Student {student['name']} Added Successfully")
         
@@ -59,23 +110,34 @@ def view_student():
     print("\n--print student list--")
     for index, student in enumerate(students, start = 1):
         
-        print(f"{index} - {student['name']} -> {student['score']}")
+        print(f"{index}.  {student['name']} | score: {student['score']}")
         
         
 
 def update_score():
     
-    view_student()
+    if not students:
+        print("No student available")
+        return
     
+    view_student()
     try:
         student_number =int(input("Enter the number: "))
-        new_score = int(input("Enter the new score: "))
         if not (1 <= student_number <= len(students)):
-            print("Out of index")
+            print("Invalid student number")
             return
+        
+        new_score = int(input("Enter the new score: "))
+        if new_score < 0 or new_score > 100:
+            print("Marks must be between 0 and 100")
+            return
+        
+       
         
     
         students[student_number-1]["score"] = new_score
+        
+        save_students(students)
      
         print(" Score Updated Successfully")
      
@@ -85,18 +147,25 @@ def update_score():
     
 def delete_student():
     
+    
+    if not students:
+        print("No student available")
+        return 
+    
     view_student()
     
     try:
       
         student_number = int(input("enter the student number to delete: "))
         if not (1 <= student_number <= len(students)):
-            print("Out of index")
+            print("Invalid student number")
             return
         
         
         
         removes = students.pop(student_number-1)
+        
+        save_students(students)
         
         print(f"{removes['name']} delete successfully!")
     except ValueError:
@@ -110,20 +179,15 @@ def top_student():
         print("No student available")
         return 
         
-    top = students[0]
-    
-    for student in students:
-        if student["score"] > top["score"]:
+    top = max(students, key= lambda s:s['score'])
             
-            top = student
-            
-    print(f"Top Student: {top['name']}, {top['score']}")
+    print(f"Top Student: {top['name']} | score: {top['score']}")
         
         
 def average_score():
     
     if not students:
-        print("No studnet available")
+        print("No student available")
         
         return 
         
@@ -132,7 +196,7 @@ def average_score():
         total += student["score"]
     average = total / len(students)
         
-    print(f"Average Score: {average}")       
+    print(f"Average Score: {average:.2f}")       
         
         
 def fail_students():
@@ -144,7 +208,7 @@ def fail_students():
     print("\n--Failed Student--") 
     for student in students:
         if student["score"] < 40:
-            print(f"{student['name']}, {student['score']} Failed")
+            print(f"{student['name']} | score: {student['score']} Failed")
         
         
     
@@ -153,15 +217,16 @@ def main():
     while True:
         
         print("\n==Student Score Manager==")
-        print("\n--Choose the number between 1 to 8: ")
+        print("\n--Choose the number between 1 to 9: ")
         print("1. Add Student")
         print("2. View Student")
         print("3. Update Score")
         print("4. Delete Student")
         print("5. Top Student")
-        print("6. Average Score")
-        print("7. Failed Student")
-        print("8. Exit")
+        print("6. Leaderboard")
+        print("7. Average Score")
+        print("8. Failed Student")
+        print("9. Exit")
         
         
         try:
@@ -184,16 +249,20 @@ def main():
                 top_student()
             
             elif choice == 6:
+                student_leaderboard()
+                
+            elif choice  == 7:
                 average_score()
-            
-            elif choice == 7:
-                fail_students()
+                
             
             elif choice == 8:
+                fail_students()
+            
+            elif choice == 9:
                 print("Goodbye!")
                 break
             else:
-                return f"Invalid input. Please select 1-8."
+                print(f"Invalid input. Please select 1-9.")
         except ValueError:
             print("invalid input")
                 
