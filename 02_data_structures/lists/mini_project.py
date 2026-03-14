@@ -5,23 +5,26 @@
 
 A command-line application to manage student scores.
 
-Features:
+## Features
+
 - Add Student
 - View Students
 - Update Score
 - Delete Student
 - Find Top Student
-- Leaderboard (Top 5 student)
+- Leaderboard (Top 5)
 - Calculate Average Score
 - Show Failed Students
-- save to Json
+- JSON Data Storage
 
-Concepts Used:
+## Concepts Used
 - Lists
 - Dictionaries
 - Loops
-- Input validation
-- CRUD operations
+- JSON File Handling
+- Input Validation
+- CRUD Operations
+
 
 Author : Mohammad Faizan
 Date   : 14/03/2026
@@ -31,7 +34,7 @@ Date   : 14/03/2026
 import json
 
 
-file= "data/student.json"
+FILE = "data/student.json"
 students = []
 
 def student_leaderboard():
@@ -60,14 +63,14 @@ def student_leaderboard():
 def load_students():
     
     try:
-        with open(file,'r') as f:
+        with open(FILE,'r') as f:
             return json.load(f)
     except FileNotFoundError:
         return []
     
 def save_students(students):
     
-        with open(file,'w') as f:
+        with open(FILE,'w') as f:
             json.dump(students, f, indent=4)
         
     
@@ -121,6 +124,7 @@ def update_score():
         return
     
     view_student()
+    
     try:
         student_number =int(input("Enter the number: "))
         if not (1 <= student_number <= len(students)):
@@ -191,9 +195,7 @@ def average_score():
         
         return 
         
-    total = 0
-    for student in students:
-        total += student["score"]
+    total = sum(student["score"] for student in students)
     average = total / len(students)
         
     print(f"Average Score: {average:.2f}")       
@@ -205,10 +207,15 @@ def fail_students():
         print("No student available")
         return 
     
+    failed = [s for s in students if s['score'] < 40]
+    
+    if not failed:
+        print("No student Failed")
+        return 
     print("\n--Failed Student--") 
-    for student in students:
-        if student["score"] < 40:
-            print(f"{student['name']} | score: {student['score']} Failed")
+    
+    for student in failed:
+        print(f"{student['name']} | score: {student['score']} Failed")
         
         
     
