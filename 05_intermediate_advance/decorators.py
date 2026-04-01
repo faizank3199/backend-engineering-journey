@@ -13,16 +13,23 @@ Topics Covered:
 2. Decorator with Return Value
 3. Decorator with Arguments (*args, **kwargs)
 4. Function Call Counter using Decorator
+5. Multiple Decorator
+6. Logging + Validation + Timing Decorator
+7. Tag Decorator 
+8. RBAC Decorator
+9. Retry Decorator
 
 ----------------------------------------------
 Author : Mohammad Faizan
-Date   : 30/03/2026
+Date   : 01/04/2026
 ----------------------------------------------
 """
 
 from functools import wraps
 from datetime import datetime
+from inspect import signature
 import time
+import random
 
 
 # ============================================================
@@ -33,9 +40,9 @@ def my_decorator(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        print("[INFO] Function started")
+        print(f"[INFO] Function {func.__name__} started")
         result = func(*args, **kwargs)
-        print("[INFO] Function ended")
+        print(f"[INFO] Function {func.__name__} ended")
         return result
 
     return wrapper
@@ -106,16 +113,16 @@ def function_counter(func):
 
 
 @function_counter
-def add_numbers(a, b):
-    """Returns sum of two numbers."""
-    return a + b
+def multiply_numbers(a, b):
+    """Returns product of two numbers."""
+    return a * b
 
 
 #===========================================================
 #  5. Multiple Decorator 
 #===========================================================
 
-def logging(func):
+def log_decorator(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         print("Logging")
@@ -130,7 +137,7 @@ def auth(func):
     return wrapper
 
 @auth
-@logging
+@log_decorator
 def api():
     print("Api is running")
 
@@ -150,18 +157,24 @@ def logger(func):
         return result 
     return wrapper
 
-def validate(expected_type):
+
+def validate(**type_hints):
     def decorator(func):
+        sig = signature(func)
+
         @wraps(func)
         def wrapper(*args, **kwargs):
-            for arg in args:
-                if not isinstance(arg, expected_type):
-                    raise TypeError(f"[ERROR] Expected {expected_type.__name__}, got {type(arg).__name__} ")
-                
-            for key, value in kwargs.items():
-                if not isinstance(value, expected_type):
-                    raise TypeError(f"[ERROR] '{key}' must be {expected_type.__name__}), got {type(value).__name__}")
-                
+            bound = sig.bind(*args, **kwargs)
+            bound.apply_defaults()
+
+            for key, expected_type in type_hints.items():
+                if key in bound.arguments:
+                    value = bound.arguments[key]
+                    if not isinstance(value, expected_type):
+                        raise TypeError(
+                            f"[ERROR] '{key}' must be {expected_type.__name__}, got {type(value).__name__}"
+                        )
+
             return func(*args, **kwargs)
         
         return wrapper
@@ -177,13 +190,97 @@ def timer(func):
         return result 
     return wrapper
         
-@logger
-@validate(int)
 @timer
-def multiply_numbers(a, b):
-    return a * b
+@logger
+@validate(a=int, b=int)
+def add_numbers(a, b):
+    return a + b
 
-        
+#================================================================
+# 7. Tag Decorator
+#================================================================
+
+def format_txt(tag):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            result = func(*args, **kwargs)
+            return f"<{tag}> {result} </{tag}>"
+        return wrapper
+    return decorator
+
+@format_txt("h1")
+def get_heading():
+    return "Python Backend"
+
+@format_txt("i")
+def get_name():
+    return "ashu@123"
+
+#===============================================================
+# 8. RBAC Decorator 
+#===============================================================
+def required_role(*allowed_roles):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            
+            user = kwargs.get("user")  # 🔥 get from kwargs
+            
+            if not user:
+                raise ValueError("User not provided")
+
+            user_role = user.get("role")
+            if not user_role:
+                raise ValueError("User role missing")
+
+            if user_role not in allowed_roles:
+                raise PermissionError(
+                    f"Access Denied: Required {allowed_roles}, got {user_role}"
+                )
+
+            return func(*args, **kwargs)
+
+        return wrapper
+    return decorator
+@required_role("admin", "manager")
+def delete_user(*,user):
+    return "User Deleted"
+
+#==============================================================
+# 9. Retry Decorator
+#==============================================================
+
+def retry(attempts, delay, backoff, exceptions = (ValueError,)):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            current_delay = delay
+            for attempt in range(1, attempts + 1):
+                
+                try:
+                    return func(*args, **kwargs)
+                except exceptions as e:
+                    print(f"[ERROR] Attempt {attempt} failed {e} ")
+                    if attempt == attempts:
+                        raise
+                    jitter = random.uniform(0, 1)
+                    sleep_time = current_delay + jitter
+
+                    print(f"[INFO] Retrying in {sleep_time:.2f}s")
+                    time.sleep(sleep_time)
+
+                    current_delay *= backoff
+        return wrapper
+    return decorator 
+
+@retry(attempts = 5, delay = 1,  backoff = 2, exceptions = (ValueError,) )
+def api_fetching():
+    import random
+    if random.random() < 0.8:
+        raise ValueError("api failed")
+    return "data received"
+
 # ============================================================
 # Main Execution (Best Practice)
 # ============================================================
@@ -200,12 +297,25 @@ if __name__ == "__main__":
 
     print("\n--- 4. Function Call Counter ---")
     for _ in range(3):
-        add_numbers(10, 20)
+        multiply_numbers(10, 20)
         
-    print("\n--Multiple decorator--") 
+        
+    print("\n--- 5. Multiple decorator ---") 
     api()
     
-    print("\n--logging + validations + time taken--")
-    multiply_numbers(10, 30)
+    print("\n--- 6. logging + validations + time taken ---")
+    add_numbers(10, 30)
 
+    print("\n--- 7. Tag Decorator ---")
+    print(get_name())
+    print(get_heading())
     
+    print("\n--- 8. RBAC Decorator ---")
+    admin = {"name": "faizan", "role":"admin"}
+    guest = {"name": "Mansury", "role":"guest"}
+
+    print(delete_user(user=admin))
+    #print(delete_user(user=guest))
+    
+    print("\n--- 9. Retry Decorator ---")
+    print(api_fetching())
