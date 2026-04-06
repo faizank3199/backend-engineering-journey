@@ -1,17 +1,8 @@
 """ 
 Class  Vs Object
 
-Class-
- Blue Print / Design 
- 
-Object -
- Actual Instance (real things)
+A class is a blueprint, and an object is an instance of that class.
 
-Example -
- Class = Car design
- Object = BMW, Audi
- 
- 
  #===========================
  Author: Mohammad Faizan
  Date: 05/04/2026
@@ -27,7 +18,7 @@ class Student:     # class Student: → blueprint
         self.marks = marks
         
     def show(self):      # Methods (Functions inside class)
-        print(f"Name: {self.name}, Marks: {self.marks}")
+        return f"Name: {self.name}, Marks: {self.marks}"
         
         
 
@@ -37,6 +28,8 @@ class Student:     # class Student: → blueprint
 
 class Car:
     def __init__(self, name: str, speed: int):
+        if speed < 0:
+            raise ValueError("speed must be positive")
         self.name = name
         self.speed = speed
 
@@ -95,8 +88,6 @@ if __name__ == "__main__":
     print(f"Final Price: {m1.price}")
 
     e1 = Employee("Faizan", 66000)
-    print(e1.yearly_salary())
     print(f"Yearly Salary: {e1.yearly_salary()}")
 
 
-#git commit -m "Initial commit: OOP Class vs Object examples in Python"
